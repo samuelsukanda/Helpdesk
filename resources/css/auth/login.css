@@ -1,0 +1,483 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+    font-family: "Geist", sans-serif;
+    background: #eef2f8;
+}
+
+/* ── Layout ──────────────────────────────── */
+.login-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: stretch;
+}
+
+/* ── Left info panel ─────────────────────── */
+.login-panel {
+    width: 380px;
+    flex-shrink: 0;
+    background: #1b3a6b;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-panel::before {
+    content: "";
+    position: absolute;
+    top: -90px;
+    right: -90px;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: rgba(147, 197, 253, 0.07);
+    pointer-events: none;
+}
+
+.login-panel::after {
+    content: "";
+    position: absolute;
+    bottom: -70px;
+    left: -70px;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: rgba(96, 165, 250, 0.06);
+    pointer-events: none;
+}
+
+/* Brand */
+.panel-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.panel-logo {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.panel-logo svg {
+    width: 18px;
+    height: 18px;
+}
+
+.panel-name {
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.3px;
+}
+
+/* Panel body */
+.panel-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 0;
+    position: relative;
+    z-index: 1;
+}
+
+.panel-heading {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 36px;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 14px;
+    letter-spacing: -0.5px;
+}
+
+.panel-heading span {
+    font-style: normal;
+    color: #93c5fd;
+}
+
+.panel-desc {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.42);
+    line-height: 1.75;
+    margin-bottom: 36px;
+}
+
+.panel-features {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.panel-feat {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.feat-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: rgba(147, 197, 253, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.feat-icon svg {
+    width: 14px;
+    height: 14px;
+}
+
+.feat-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.82);
+    margin-bottom: 3px;
+}
+
+.feat-sub {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.32);
+}
+
+/* Panel footer */
+.panel-footer {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.18);
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Right form area ─────────────────────── */
+.login-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 40px;
+    background: #eef2f8;
+}
+
+.login-form-wrap {
+    width: 100%;
+    max-width: 360px;
+}
+
+/* Tag */
+.form-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #dbeafe;
+    border-radius: 20px;
+    padding: 5px 13px 5px 9px;
+    margin-bottom: 22px;
+}
+
+.tag-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #2563eb;
+    flex-shrink: 0;
+}
+
+.form-tag span {
+    font-size: 11px;
+    font-weight: 500;
+    color: #1d4ed8;
+    letter-spacing: 0.3px;
+}
+
+/* Heading */
+.form-title {
+    font-family: "Instrument Serif", serif;
+    font-size: 32px;
+    color: #0f1e3a;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.form-title em {
+    font-style: italic;
+    color: #2563eb;
+}
+
+.form-subtitle {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 30px;
+}
+
+/* Session status */
+.form-status {
+    background: #eff6ff;
+    border: 0.5px solid #bfdbfe;
+    border-radius: 9px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #1d4ed8;
+    margin-bottom: 20px;
+}
+
+/* Form groups */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 7px;
+}
+
+.input-wrap {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    color: #b0bec5;
+    pointer-events: none;
+}
+
+.form-input {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #dce6f5;
+    border-radius: 10px;
+    padding: 12px 13px 12px 40px;
+    font-size: 14px;
+    font-family: "Geist", sans-serif;
+    color: #0f1e3a;
+    outline: none;
+    transition:
+        border-color 0.18s,
+        box-shadow 0.18s;
+}
+
+.form-input::placeholder {
+    color: #cbd5e1;
+}
+
+.form-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-input.is-error {
+    border-color: #ef4444;
+}
+
+.form-error {
+    font-size: 12px;
+    color: #dc2626;
+    margin-top: 5px;
+}
+
+/* Options row */
+.form-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 26px;
+}
+
+.remember-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+}
+
+.remember-label input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: #2563eb;
+    cursor: pointer;
+}
+
+.remember-label span {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.forgot-link {
+    font-size: 13px;
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.15s;
+}
+
+.forgot-link:hover {
+    color: #1d4ed8;
+}
+
+/* Submit */
+.btn-submit {
+    width: 100%;
+    padding: 13px;
+    background: #1b3a6b;
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-family: "Geist", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    letter-spacing: 0.1px;
+    transition:
+        background 0.18s,
+        transform 0.12s;
+}
+
+.btn-submit svg {
+    width: 15px;
+    height: 15px;
+}
+
+.btn-submit:hover {
+    background: #0f2a55;
+    transform: translateY(-1px);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+/* Divider */
+.form-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.divider-line {
+    flex: 1;
+    height: 1px;
+    background: #dce6f5;
+}
+
+.divider-label {
+    font-size: 12px;
+    color: #b0bec5;
+    white-space: nowrap;
+}
+
+/* Google */
+.btn-google {
+    width: 100%;
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #dce6f5;
+    border-radius: 10px;
+    color: #475569;
+    font-family: "Geist", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    transition:
+        border-color 0.18s,
+        background 0.18s;
+}
+
+.btn-google svg {
+    width: 16px;
+    height: 16px;
+}
+
+.btn-google:hover {
+    border-color: #93c5fd;
+    background: #f8faff;
+}
+
+/* Register */
+.form-register {
+    text-align: center;
+    font-size: 13px;
+    color: #94a3b8;
+    margin-top: 20px;
+}
+
+.form-register a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.form-register a:hover {
+    color: #1d4ed8;
+}
+
+/* Trust */
+.form-trust {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 26px;
+}
+
+.form-trust svg {
+    width: 12px;
+    height: 12px;
+    color: #93c5fd;
+}
+
+.form-trust span {
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+/* ── Responsive ──────────────────────────── */
+@media (max-width: 768px) {
+    .login-panel {
+        display: none;
+    }
+
+    .login-main {
+        padding: 2rem 1.5rem;
+    }
+}

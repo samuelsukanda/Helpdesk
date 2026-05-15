@@ -187,23 +187,45 @@
                                         ];
                                         $iconClass = $colors[$color] ?? $colors['blue'];
                                     @endphp
-                                    <a href="{{ $data['url'] ?? route('notifications.index') }}"
-                                        class="notif-item {{ $isUnread ? 'unread' : '' }}"
-                                        onclick="markRead('{{ $notif->id }}', event)">
-                                        <div class="notif-icon {{ $iconClass }}">
-                                            <i class="fas {{ $icon }} text-xs"></i>
+
+                                    <div class="relative group" id="notif-{{ $notif->id }}">
+
+                                        <a href="{{ $data['url'] ?? route('notifications.index') }}"
+                                            class="notif-item {{ $isUnread ? 'unread' : '' }} pr-6"
+                                            onclick="markRead('{{ $notif->id }}', event)">
+                                            <div class="notif-icon {{ $iconClass }}">
+                                                <i class="fas {{ $icon }} text-xs"></i>
+                                            </div>
+                                            <div class="notif-content">
+                                                <p class="notif-title">{{ $data['title'] ?? 'Notifikasi' }}</p>
+                                                <p class="notif-desc">{{ $data['message'] ?? '' }}</p>
+                                                <span
+                                                    class="notif-time">{{ $notif->created_at->diffForHumans() }}</span>
+                                            </div>
+                                        </a>
+
+                                        <div class="absolute top-2 right-2 flex items-center gap-1">
+                                            @if ($isUnread)
+                                                <div class="notif-dot group-hover:hidden"
+                                                    id="dot-{{ $notif->id }}"></div>
+                                            @endif
+
+                                            <button onclick="deleteNotif('{{ $notif->id }}', event)"
+                                                title="Hapus notifikasi"
+                                                class="w-5 h-5 rounded-full
+                                                        flex items-center justify-center
+                                                        text-gray-300 hover:text-red-500 hover:bg-red-50
+                                                        opacity-0 group-hover:opacity-100
+                                                        transition-all duration-150
+                                                        focus:opacity-100 focus:outline-none">
+                                                <i class="fas fa-times text-xs"></i>
+                                            </button>
                                         </div>
-                                        <div class="notif-content">
-                                            <p class="notif-title">{{ $data['title'] ?? 'Notifikasi' }}</p>
-                                            <p class="notif-desc">{{ $data['message'] ?? '' }}</p>
-                                            <span class="notif-time">{{ $notif->created_at->diffForHumans() }}</span>
-                                        </div>
-                                        @if ($isUnread)
-                                            <div class="notif-dot"></div>
-                                        @endif
-                                    </a>
+
+                                    </div>
+
                                 @empty
-                                    <div class="notif-empty">
+                                    <div class="notif-empty" id="notifEmpty">
                                         <i class="fas fa-bell-slash text-2xl text-gray-300 mb-2"></i>
                                         <p class="text-sm text-gray-400">Tidak ada notifikasi</p>
                                     </div>
@@ -242,7 +264,7 @@
     </div>
 
     <script>
-        // ===== SIDEBAR TOGGLE =====
+        // SIDEBAR TOGGLE
         const sidebar = document.getElementById("sidebar");
         const overlay = document.getElementById("sidebarOverlay");
         const hamburger = document.getElementById("hamburgerBtn");
@@ -251,28 +273,19 @@
             sidebar.classList.toggle("open");
             overlay.classList.toggle("active");
             hamburger.classList.toggle("active");
-            document.body.style.overflow = sidebar.classList.contains("open") ?
-                "hidden" :
-                "";
+            document.body.style.overflow = sidebar.classList.contains("open") ? "hidden" : "";
         }
 
-        // Close sidebar when clicking on a link (mobile)
         document.querySelectorAll(".nav-link").forEach((link) => {
             link.addEventListener("click", () => {
-                if (window.innerWidth <= 1024) {
-                    toggleSidebar();
-                }
+                if (window.innerWidth <= 1024) toggleSidebar();
             });
         });
 
-        // Close sidebar on escape key
         document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape" && sidebar.classList.contains("open")) {
-                toggleSidebar();
-            }
+            if (e.key === "Escape" && sidebar.classList.contains("open")) toggleSidebar();
         });
 
-        // Handle resize
         let resizeTimer;
         window.addEventListener("resize", () => {
             clearTimeout(resizeTimer);
@@ -286,7 +299,7 @@
             }, 100);
         });
 
-        // ===== NOTIFICATION DROPDOWN =====
+        // NOTIFICATION DROPDOWN
         const notifDropdown = document.getElementById("notificationDropdown");
         const notifPanel = document.getElementById("notifPanel");
         const notifBtn = document.getElementById("notifBtn");
@@ -295,7 +308,6 @@
             e.stopPropagation();
             const isHidden = notifPanel.classList.contains("hidden");
 
-            // Close all other dropdowns first
             document.querySelectorAll(".notification-panel").forEach((p) => {
                 if (p !== notifPanel) p.classList.add("hidden");
             });
@@ -309,7 +321,6 @@
             }
         }
 
-        // Close dropdown when clicking outside
         document.addEventListener("click", (e) => {
             if (!notifDropdown.contains(e.target)) {
                 notifPanel.classList.add("hidden");
@@ -319,16 +330,13 @@
 
         // Mark single notification as read
         function markRead(id, e) {
-            // Allow navigation to proceed
-            // In production, send AJAX request to mark as read
             fetch(`/notifications/${id}/mark-as-read`, {
                 method: "POST",
                 headers: {
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content ||
-                        "",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content || "",
                     Accept: "application/json",
                 },
-            }).catch(() => {}); // Silently fail
+            }).catch(() => {});
         }
 
         // Mark all as read
@@ -336,26 +344,63 @@
             fetch("/notifications/mark-all-as-read", {
                     method: "POST",
                     headers: {
-                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content ||
-                            "",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content || "",
                         Accept: "application/json",
                     },
                 })
                 .then(() => {
-                    // Remove unread styling
                     document.querySelectorAll(".notif-item.unread").forEach((item) => {
                         item.classList.remove("unread");
-                        const dot = item.querySelector(".notif-dot");
-                        if (dot) dot.remove();
                     });
-                    // Hide badge
+                    document.querySelectorAll("[id^='dot-']").forEach((dot) => dot.remove());
                     const badge = document.getElementById("notifBadge");
                     if (badge) badge.remove();
                 })
                 .catch(() => {});
         }
 
-        // Auto-hide alerts after 5 seconds
+        function deleteNotif(id, e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const el = document.getElementById("notif-" + id);
+            if (el) {
+                el.style.transition = "opacity 0.2s, transform 0.2s";
+                el.style.opacity = "0";
+                el.style.transform = "translateX(8px)";
+                setTimeout(() => {
+                    el.remove();
+                    const list = document.getElementById("notifList");
+                    const items = list.querySelectorAll("[id^='notif-']");
+                    if (items.length === 0) {
+                        list.innerHTML = `
+                            <div class="notif-empty" id="notifEmpty">
+                                <i class="fas fa-bell-slash text-2xl text-gray-300 mb-2"></i>
+                                <p class="text-sm text-gray-400">Tidak ada notifikasi</p>
+                            </div>`;
+                    }
+                }, 200);
+            }
+
+            const badge = document.getElementById("notifBadge");
+            if (badge) {
+                const current = parseInt(badge.textContent) || 0;
+                if (current <= 1) {
+                    badge.remove();
+                } else {
+                    badge.textContent = current - 1;
+                }
+            }
+
+            fetch(`/notifications/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content || "",
+                    "Accept": "application/json",
+                },
+            }).catch(() => {});
+        }
+
         document.querySelectorAll(".alert").forEach((alert) => {
             setTimeout(() => {
                 alert.style.opacity = "0";

@@ -56,6 +56,25 @@ class TicketController extends Controller
             'attachments.*'   => 'nullable|file|max:10240',
         ]);
 
+        $duplicate = Ticket::where('requester_id', auth()->id())
+            ->where(function ($q) use ($request) {
+                $q->where('title', $request->title)
+                    ->orWhere('description', $request->description);
+            })
+            ->where('created_at', '>=', now()->subSeconds(30))
+            ->withTrashed()
+            ->first();
+
+        if ($duplicate) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'duplicate' => 'Tiket dengan judul atau deskripsi yang sama baru saja dibuat ('
+                        . $duplicate->ticket_number
+                        . '). Mohon tunggu sebentar sebelum membuat tiket baru.',
+                ]);
+        }
+
         try {
             $ticket = DB::transaction(function () use ($request) {
 
@@ -72,12 +91,17 @@ class TicketController extends Controller
                     'requester_id'    => auth()->id(),
                     'department_id'   => auth()->user()->department_id,
                     'sla_policy_id'   => $sla?->id,
-                    'due_at'          => $sla ? now()->addHours($sla->resolution_time_hours) : null,
+                    'due_at'          => $sla
+                        ? now()->addHours($sla->resolution_time_hours)
+                        : null,
                 ]);
 
                 if ($request->hasFile('attachments')) {
                     foreach ($request->file('attachments') as $file) {
-                        $path = $file->store('ticket-attachments/' . $ticket->id, 'public');
+                        $path = $file->store(
+                            'ticket-attachments/' . $ticket->id,
+                            'public'
+                        );
                         TicketAttachment::create([
                             'ticket_id'     => $ticket->id,
                             'user_id'       => auth()->id(),
@@ -93,7 +117,6 @@ class TicketController extends Controller
                 return $ticket;
             });
 
-            // Kirim notifikasi di luar transaction
             $agents = User::role(['admin', 'agent'])->get();
             foreach ($agents as $agent) {
                 $agent->notify(new TicketCreatedNotification($ticket));
@@ -110,6 +133,7 @@ class TicketController extends Controller
                         'ticket' => 'Terjadi konflik nomor tiket karena ada permintaan bersamaan. Silakan coba kirim ulang.',
                     ]);
             }
+
             throw $e;
         }
     }

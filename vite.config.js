@@ -12,12 +12,32 @@ export default defineConfig({
                 "resources/css/auth/auth.css",
 
                 // Dashboard
-                "resources/css/dashboard/dashboard.css",
-                "resources/js/dashboard/dashboard.js",
+                "resources/css/dashboard/dashboard-admin.css",
+                "resources/js/dashboard/dashboard-admin.js",
 
-                // Views
-                "resources/css/views",
-                "resources/js/views",
+                "resources/css/dashboard/dashboard-agent.css",
+                "resources/js/dashboard/dashboard-agent.js",
+
+                "resources/css/dashboard/dashboard-user.css",
+                "resources/js/dashboard/dashboard-user.js",
+
+                // Admin
+                "resources/css/views/admin/categories.css",
+                "resources/js/views/admin/categories.js",
+
+                "resources/css/views/admin/departments.css",
+                "resources/js/views/admin/departments.js",
+
+                "resources/css/views/admin/users.css",
+                "resources/js/views/admin/users.js",
+
+                // Ticket
+                "resources/css/views/ticket.css",
+                "resources/js/views/ticket.js",
+
+                // Report
+                "resources/css/views/report.css",
+                "resources/js/views/report.js",
             ],
             refresh: true,
         }),

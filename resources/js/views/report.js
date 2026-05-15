@@ -10,7 +10,7 @@ $(document).ready(function () {
     // Inisialisasi DataTable
     const table = $("#reportsTable").DataTable({
         responsive: true,
-        pageLength: 25,
+        pageLength: 10,
         lengthMenu: [
             [10, 25, 50, 100, -1],
             [10, 25, 50, 100, "Semua"],
